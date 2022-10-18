@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"os"
+	"text/template"
 )
 
 type IndexData struct {
@@ -27,6 +29,22 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func indexHTML(w http.ResponseWriter, r *http.Request) {
+
+	var indD IndexData
+	indD.Title = "Jun Blog"
+	indD.Desc = "The first Blog"
+
+	t := template.New("index.html")
+
+	path, _ := os.Getwd()
+
+	t, _ = t.ParseFiles(path + "/template/index.html")
+
+	t.Execute(w, indD)
+
+}
+
 func main() {
 
 	server := http.Server{
@@ -34,6 +52,8 @@ func main() {
 	}
 
 	http.HandleFunc("/", index)
+
+	http.HandleFunc("/index.html", indexHTML)
 
 	if err := server.ListenAndServe(); err != nil {
 		log.Println(err)
