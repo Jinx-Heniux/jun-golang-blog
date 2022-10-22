@@ -1,6 +1,6 @@
 var TOKEN_KEY = "AUTH_TOKEN";
 var USER_KEY = "USER_INFO";
-var SALT = "dotnet9"; // 加盐
+var SALT = "mszlu"; // 加盐
 
 $(function () {
   // 登录
@@ -45,7 +45,7 @@ function loginLogic() {
     $(".login-action").hide();
     $(".login-end").show();
     var userInfo = JSON.parse(localStorage.getItem(USER_KEY)) || {};
-    $(".login-username").text(userInfo.name);
+    $(".login-username").text(userInfo.userName);
   }
   // 登录
   $(".login-submint").click(function () {
@@ -58,16 +58,17 @@ function loginLogic() {
     // md5加密
     var MD5Passwd = new Hashes.MD5().hex(passwd + SALT);
     $.ajax({
-      url: "http://127.0.0.1:5141/api/login/account",
-      data: JSON.stringify({ username: name, password: passwd, type: "account", autologin: false }),
+      url: "/api/v1/login",
+      data: JSON.stringify({ username: name, passwd: MD5Passwd }),
       contentType: "application/json",
       type: "POST",
       success: function (res) {
-          if (res.success !== true) {
-            return tipEle.show().text(res.errorMessage);
+          if (res.code !== 200) {
+            return tipEle.show().text(res.error);
           }
-          localStorage.setItem(TOKEN_KEY, res.token);
-          localStorage.setItem(USER_KEY, JSON.stringify(res.user));
+          var data = res.data || {};
+          localStorage.setItem(TOKEN_KEY, data.token);
+          localStorage.setItem(USER_KEY, JSON.stringify(data.userInfo));
           location.href = "/";
       },
       error: function (err) {
@@ -191,17 +192,17 @@ function initSearch() {
   function searchHandler(val) {
     if (!val) return (searchList = []);
     $.ajax({
-        url: "http://localhost:5005/api/search?keywords=" + val,// TODO 生产环境需要将/api反向代理到5005端口，开发环境暂时未做代理，调试时接口需要写成 http://localhost:5005/api/search?keywords=
+      url: "/api/v1/post/search?val=" + val,
       contentType: "application/json",
       success: function (res) {
-        if (res.success !== true) return alert(res.errorMessage);
+        if (res.code !== 200) return alert(res.error);
         var data = res.data || [];
         searchList = [];
         if (data.length === 0) return drop.html("");
         for (var i = 0, len = data.length; i < len; i++) {
           var item = data[i];
           searchList.push(
-            "<a href='/" + item.year + "/" + item.month + "/" + item.slug + "'>" + item.title + "<a/>"
+            "<a href='/p/" + item.pid + ".html'>" + item.title + "<a/>"
           );
           drop.show().html(searchList.join(""));
         }

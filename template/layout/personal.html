@@ -20,10 +20,10 @@
   <div class="personal-box">
     <div class="personal-cteg">
       <h2>分类：</h2>
-      {{range $index,$elem := .Categories}}
+      {{range $index,$elem := .Categorys}}
       <div>
         <i class="iconfont icon-fenlei-copy"></i>
-        <a href="/c/{{$elem.Slug}}">{{$elem.Name}}</a>
+        <a href="/c/{{$elem.Cid}}">{{$elem.Name}}</a>
       </div>
       {{end}}
     </div>

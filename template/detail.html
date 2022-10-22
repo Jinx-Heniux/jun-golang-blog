@@ -18,7 +18,7 @@
 <main class="container">
 <link rel="stylesheet" href="/resource/css/detail.css" />
 {{if .Valine}}
-<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script src="{{.CdnURL}}/js/valine.min.js"></script>
 {{end}}
 <div class="detail">
   <div class="detail-left">
@@ -26,17 +26,15 @@
     <div class="detail-action">
       <span>
         <i class="iconfont icon-yonghu"></i>
-        &nbsp; {{.Article.Original}}
+        &nbsp; {{.Article.UserName}}
       </span>
       <span>
         <i class="iconfont icon-wenjianjia"></i>
-        {{range $catIndex, $cat := .Article.Categories}}
-        &nbsp;<a href="/c/{{$cat.Slug}}">{{$cat.Name}}</a>
-        {{end}}
+        &nbsp;<a href="/c/{{.Article.CategoryId}}">{{.Article.CategoryName}}</a>
       </span>
       <span>
         <i class="iconfont icon-riqi"></i>
-        &nbsp;{{.Article.CreationTime}}
+        &nbsp;{{.Article.CreateAt}}
       </span>
       <span>
         <i class="iconfont icon-yanjing"></i>
@@ -44,9 +42,9 @@
       </span>
       <span class="detail-edit">
         <i class="iconfont icon-wenbenshuru"></i>
-        <a href="/writing?slug={{.Article.Slug}}">编辑</a>
+        <a href="/writing?id={{.Article.Pid}}">编辑</a>
       </span>
-      <span class="detail-edit detail-delete" pid="{{.Article.Slug}}">
+      <span class="detail-edit detail-delete" pid="{{.Article.Pid}}">
         <i class="iconfont icon-shanchu"></i>
         删除
       </span>
@@ -79,8 +77,8 @@
 <script>
   new Valine({
     el: "#vcomments",
-    appId: "{{.ValineAppId}}",
-    appKey: "{{.ValineAppKey}}",
+    appId: "{{.ValineAppid}}",
+    appKey: "{{.ValineAppkey}}",
     serverURLs: "{{.ValineServerURL}}",
     placeholder: "What are you talking about?"
   });

@@ -18,7 +18,7 @@
 <main class="container">
   <link rel="stylesheet" href="/resource/css/detail.css" />
   {{if .Valine}}
-  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  <script src="{{.CdnURL}}/js/valine.min.js"></script>
   {{end}}
   <div class="detail">
     <div class="detail-left">
@@ -77,8 +77,8 @@
 <script>
   new Valine({
     el: "#vcomments",
-    appId: "{{.ValineAppId}}",
-    appKey: "{{.ValineAppKey}}",
+    appId: "{{.ValineAppid}}",
+    appKey: "{{.ValineAppkey}}",
     serverURLs: "{{.ValineServerURL}}",
     placeholder: "What are you talking about?"
   });
