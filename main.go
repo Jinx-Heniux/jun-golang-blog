@@ -4,8 +4,14 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/Jinx-Heniux/jun-golang-blog/common"
 	"github.com/Jinx-Heniux/jun-golang-blog/router"
 )
+
+func init() {
+	//模板加载
+	common.LoadTemplate()
+}
 
 func main() {
 
