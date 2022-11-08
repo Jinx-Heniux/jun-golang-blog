@@ -20,6 +20,44 @@ type HtmlTemplate struct {
 	Writing    TemplateBlog
 }
 
+func (t *TemplateBlog) WriteData(w io.Writer, data interface{}) {
+	err := t.Execute(w, data)
+	if err != nil {
+		_, err := w.Write([]byte(err.Error()))
+		if err != nil {
+			log.Println(err)
+			return
+		}
+	}
+}
+func (t *TemplateBlog) WriteError(w io.Writer, err error) {
+	if err != nil {
+		_, err := w.Write([]byte(err.Error()))
+		if err != nil {
+			log.Println(err)
+			return
+		}
+	}
+}
+func InitTemplate(templateDir string) (HtmlTemplate, error) {
+	tp, err := readTemplate(
+		[]string{"index", "category", "custom", "detail", "login", "pigeonhole", "writing"},
+		templateDir,
+	)
+	var htmlTemplate HtmlTemplate
+	if err != nil {
+		return htmlTemplate, err
+	}
+	htmlTemplate.Index = tp[0]
+	htmlTemplate.Category = tp[1]
+	htmlTemplate.Custom = tp[2]
+	htmlTemplate.Detail = tp[3]
+	htmlTemplate.Login = tp[4]
+	htmlTemplate.Pigeonhole = tp[5]
+	htmlTemplate.Writing = tp[6]
+	return htmlTemplate, nil
+}
+
 func IsODD(num int) bool {
 	return num%2 == 0
 }
@@ -32,7 +70,6 @@ func Date(layout string) string {
 func DateDay(date time.Time) string {
 	return date.Format("2006-01-02 15:04:05")
 }
-
 func readTemplate(templates []string, templateDir string) ([]TemplateBlog, error) {
 	var tbs []TemplateBlog
 	for _, view := range templates {
@@ -56,30 +93,4 @@ func readTemplate(templates []string, templateDir string) ([]TemplateBlog, error
 		tbs = append(tbs, tb)
 	}
 	return tbs, nil
-}
-
-func InitTemplate(templateDir string) (HtmlTemplate, error) {
-	tp, err := readTemplate(
-		[]string{"index", "category", "custom", "detail", "login", "pigeonhole", "writing"},
-		templateDir,
-	)
-	var htmlTemplate HtmlTemplate
-	if err != nil {
-		return htmlTemplate, err
-	}
-	htmlTemplate.Index = tp[0]
-	htmlTemplate.Category = tp[1]
-	htmlTemplate.Custom = tp[2]
-	htmlTemplate.Detail = tp[3]
-	htmlTemplate.Login = tp[4]
-	htmlTemplate.Pigeonhole = tp[5]
-	htmlTemplate.Writing = tp[6]
-	return htmlTemplate, nil
-}
-
-func (t *TemplateBlog) WriteData(w io.Writer, data interface{}) {
-	err := t.Execute(w, data)
-	if err != nil {
-		w.Write([]byte("error"))
-	}
 }
